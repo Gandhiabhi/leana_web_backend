@@ -10,7 +10,7 @@ import * as bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 const PLACEHOLDER = (seed: string) =>
-  `https://res.cloudinary.com/demo/image/upload/leana/${seed}.jpg`;
+  `https://res.cloudinary.com/dulodorz5/image/upload/leana/${seed}.jpg`;
 
 const categories = [
   { slug: 'serums', name: 'Serums', position: 1 },
