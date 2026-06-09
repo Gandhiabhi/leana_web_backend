@@ -49,7 +49,24 @@ export class CategoriesService {
     const slug = await uniqueSlug(dto.slug || dto.name, (s) =>
       this.prisma.category.findUnique({ where: { slug: s } }).then(Boolean),
     );
-    return this.prisma.category.create({ data: { ...dto, slug } });
+    const nextPosition =
+      dto.position ??
+      ((await this.prisma.category.aggregate({ where: { deletedAt: null }, _max: { position: true } }))
+        ._max.position ?? -1) + 1;
+
+    return this.prisma.category.create({
+      data: {
+        name: dto.name,
+        slug,
+        description: dto.description,
+        image: dto.image,
+        parentId: dto.parentId,
+        position: nextPosition,
+        isActive: dto.isActive ?? true,
+        seoTitle: dto.seoTitle,
+        seoDescription: dto.seoDescription,
+      },
+    });
   }
 
   async update(id: string, dto: UpdateCategoryDto) {

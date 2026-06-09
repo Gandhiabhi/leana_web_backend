@@ -40,7 +40,23 @@ export class CollectionsService {
     const slug = await uniqueSlug(dto.slug || dto.name, (s) =>
       this.prisma.collection.findUnique({ where: { slug: s } }).then(Boolean),
     );
-    return this.prisma.collection.create({ data: { ...dto, slug } });
+    const nextPosition =
+      dto.position ??
+      ((await this.prisma.collection.aggregate({ where: { deletedAt: null }, _max: { position: true } }))
+        ._max.position ?? -1) + 1;
+
+    return this.prisma.collection.create({
+      data: {
+        name: dto.name,
+        slug,
+        description: dto.description,
+        image: dto.image,
+        position: nextPosition,
+        isActive: dto.isActive ?? true,
+        seoTitle: dto.seoTitle,
+        seoDescription: dto.seoDescription,
+      },
+    });
   }
 
   async update(id: string, dto: UpdateCollectionDto) {

@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
 import {
   IsBoolean,
   IsInt,
@@ -40,7 +39,6 @@ export class CreateCategoryDto {
 
   @ApiPropertyOptional({ default: 0 })
   @IsOptional()
-  @Transform(({ value }) => parseInt(value as string, 10))
   @IsInt()
   @Min(0)
   position?: number;

@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
 import { IsBoolean, IsInt, IsOptional, IsString, IsUrl, MaxLength, Min } from 'class-validator';
 
 export class CreateCollectionDto {
@@ -27,7 +26,6 @@ export class CreateCollectionDto {
 
   @ApiPropertyOptional({ default: 0 })
   @IsOptional()
-  @Transform(({ value }) => parseInt(value as string, 10))
   @IsInt()
   @Min(0)
   position?: number;

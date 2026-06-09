@@ -142,6 +142,7 @@ export class AdminService {
           firstName: true,
           lastName: true,
           tier: true,
+          loyaltyPoints: true,
           location: true,
           createdAt: true,
           _count: { select: { orders: true } },
@@ -149,6 +150,35 @@ export class AdminService {
       }),
       this.prisma.user.count({ where }),
     ]);
-    return { users, total };
+
+    const userIds = users.map((u) => u.id);
+    const spentRows =
+      userIds.length > 0
+        ? await this.prisma.order.groupBy({
+            by: ['userId'],
+            where: {
+              userId: { in: userIds },
+              status: { in: COUNTED_STATUSES },
+            },
+            _sum: { total: true },
+          })
+        : [];
+    const spentByUser = new Map(
+      spentRows.map((row) => [row.userId, Number(row._sum.total ?? 0)]),
+    );
+
+    const mapped = users.map((u) => ({
+      id: u.id,
+      email: u.email,
+      firstName: u.firstName,
+      lastName: u.lastName,
+      tier: u.tier,
+      loyaltyPoints: u.loyaltyPoints,
+      createdAt: u.createdAt,
+      orderCount: u._count.orders,
+      totalSpent: spentByUser.get(u.id) ?? 0,
+    }));
+
+    return { users: mapped, total };
   }
 }
