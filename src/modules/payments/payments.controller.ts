@@ -17,7 +17,12 @@ import { Public } from '../../common/decorators/public.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { ResponseMessage } from '../../common/decorators/response-message.decorator';
 import { RefundOrderDto } from '../orders/dto/order-admin.dto';
+import { RazorpayVerifyDto } from '../orders/dto/checkout.dto';
 import { PaymentsService } from './payments.service';
+import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { AuthenticatedUser } from '../../common/interfaces/jwt-payload.interface';
+import { UseGuards } from '@nestjs/common';
 
 @ApiTags('Payments')
 @Controller('payments')
@@ -42,5 +47,19 @@ export class PaymentsController {
   @ApiOperation({ summary: 'Refund an order (admin)' })
   refund(@Param('orderId') orderId: string, @Body() dto: RefundOrderDto) {
     return this.paymentsService.refundOrder(orderId, dto.amount);
+  }
+
+  @Public()
+  @UseGuards(OptionalJwtAuthGuard)
+  @Post('razorpay/verify')
+  @ResponseMessage('Payment verified')
+  @ApiOperation({ summary: 'Verify Razorpay payment and complete the order' })
+  verifyRazorpay(
+    @Body() dto: RazorpayVerifyDto,
+    @CurrentUser() user: AuthenticatedUser | undefined,
+    @Headers('x-cart-session') sessionId?: string,
+  ) {
+    const owner = user ? { userId: user.id } : { sessionId };
+    return this.paymentsService.verifyRazorpay(dto, owner);
   }
 }

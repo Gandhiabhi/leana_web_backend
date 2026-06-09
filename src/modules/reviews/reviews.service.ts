@@ -47,7 +47,7 @@ export class ReviewsService {
       const purchased = await this.prisma.orderItem.findFirst({
         where: {
           productId: dto.productId,
-          order: { userId: user.id, status: { in: ['PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED'] } },
+          order: { userId: user.id, status: { in: ['PAID', 'PROCESSING', 'CONFIRMED', 'SHIPPED', 'DELIVERED'] } },
         },
       });
       verified = Boolean(purchased);

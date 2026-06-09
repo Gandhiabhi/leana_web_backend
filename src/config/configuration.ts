@@ -48,6 +48,11 @@ export interface AppConfig {
     webhookSecret: string;
     currency: string;
   };
+  razorpay: {
+    keyId: string;
+    keySecret: string;
+    currency: string;
+  };
   mail: {
     host: string;
     port: number;
@@ -118,6 +123,11 @@ export default (): AppConfig => {
       secretKey: process.env.STRIPE_SECRET_KEY ?? '',
       webhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? '',
       currency: process.env.STRIPE_CURRENCY ?? 'usd',
+    },
+    razorpay: {
+      keyId: process.env.RAZORPAY_KEY_ID ?? '',
+      keySecret: process.env.RAZORPAY_KEY_SECRET ?? '',
+      currency: process.env.RAZORPAY_CURRENCY ?? 'INR',
     },
     mail: {
       host: process.env.SMTP_HOST ?? '',

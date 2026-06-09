@@ -5,6 +5,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 const COUNTED_STATUSES: OrderStatus[] = [
   OrderStatus.PAID,
   OrderStatus.PROCESSING,
+  OrderStatus.CONFIRMED,
   OrderStatus.SHIPPED,
   OrderStatus.DELIVERED,
 ];

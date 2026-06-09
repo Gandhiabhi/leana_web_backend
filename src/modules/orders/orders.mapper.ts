@@ -43,6 +43,7 @@ export function toFrontendOrder(o: OrderWithRelations) {
           amount: Number(o.payment.amount),
           refundedAmount: Number(o.payment.refundedAmount),
           clientSecret: o.payment.stripeClientSecret ?? undefined,
+          metadata: (o.payment.metadata as Record<string, unknown> | null) ?? undefined,
         }
       : undefined,
     statusHistory: o.statusHistory.map((h) => ({

@@ -10,6 +10,8 @@ import { randomUUID } from 'crypto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { StripeService } from '../../integrations/stripe/stripe.service';
 import { OrdersService } from '../orders/orders.service';
+import { CartOwner } from '../cart/cart.service';
+import { RazorpayVerifyDto } from '../orders/dto/checkout.dto';
 
 @Injectable()
 export class PaymentsService {
@@ -69,6 +71,16 @@ export class PaymentsService {
     }
 
     return { received: true };
+  }
+
+  async verifyRazorpay(dto: RazorpayVerifyDto, owner: CartOwner) {
+    return this.orders.verifyRazorpayPayment(
+      dto.orderId,
+      dto.razorpayOrderId,
+      dto.razorpayPaymentId,
+      dto.razorpaySignature,
+      owner,
+    );
   }
 
   /** Admin-initiated refund. */

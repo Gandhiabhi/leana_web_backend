@@ -8,6 +8,7 @@ import { validateEnv } from './config/env.validation';
 import { PrismaModule } from './prisma/prisma.module';
 import { MailModule } from './integrations/mail/mail.module';
 import { StripeModule } from './integrations/stripe/stripe.module';
+import { RazorpayModule } from './integrations/razorpay/razorpay.module';
 import { CloudinaryModule } from './integrations/cloudinary/cloudinary.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
@@ -68,6 +69,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
     PrismaModule,
     MailModule,
     StripeModule,
+    RazorpayModule,
     CloudinaryModule,
     AuthModule,
     UsersModule,
