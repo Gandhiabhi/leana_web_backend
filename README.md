@@ -42,8 +42,13 @@ cp .env.example .env        # then fill in DATABASE_URL, DIRECT_URL, secrets, ke
 # 3. Generate the Prisma client
 npm run prisma:generate
 
-# 4. Run migrations against your database
-npm run prisma:migrate
+# 4. Apply migrations (creates all tables on a fresh database)
+npm run prisma:deploy
+# If your database was previously created with `db push`, baseline once:
+# npx prisma migrate resolve --applied 20250610120000_init
+
+# Alternative for empty local DB only (no migration history):
+# npx prisma migrate dev
 
 # 5. Seed baseline data (admin user, catalog, home content)
 npm run db:seed
