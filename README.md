@@ -105,7 +105,7 @@ Set these in the Render dashboard (use your Supabase **pooler** URL for `DATABAS
 - `DATABASE_URL` — PostgreSQL connection string (Supabase pooler, port 6543 or 5432)
 - `DIRECT_URL` — Direct Supabase connection (for migrations if needed)
 - `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`
-- `CORS_ORIGIN` — your frontend URL (e.g. `https://your-app.vercel.app`)
+- `CORS_ORIGINS` — comma-separated frontend URLs (no trailing slashes), e.g. `https://leana-luxe-studio.vercel.app,http://localhost:8080`
 - Cloudinary, Stripe, mail vars as in `.env.example`
 
 ### One-time manual baseline (optional)

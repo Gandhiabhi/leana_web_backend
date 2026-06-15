@@ -73,6 +73,13 @@ const toNumber = (value: string | undefined, fallback: number): number => {
   return Number.isFinite(parsed) ? parsed : fallback;
 };
 
+/** Strip trailing slashes so browser origins match (browsers never send a trailing /). */
+const parseCorsOrigins = (raw: string | undefined): string[] =>
+  (raw ?? '')
+    .split(',')
+    .map((o) => o.trim().replace(/\/+$/, ''))
+    .filter(Boolean);
+
 export default (): AppConfig => {
   const env = process.env.NODE_ENV ?? 'development';
   return {
@@ -81,10 +88,7 @@ export default (): AppConfig => {
     port: toNumber(process.env.PORT, 4000),
     apiPrefix: process.env.API_PREFIX ?? 'api',
     apiVersion: process.env.API_VERSION ?? 'v1',
-    corsOrigins: (process.env.CORS_ORIGINS ?? '')
-      .split(',')
-      .map((o) => o.trim())
-      .filter(Boolean),
+    corsOrigins: parseCorsOrigins(process.env.CORS_ORIGINS),
     database: {
       url: process.env.DATABASE_URL ?? '',
       directUrl: process.env.DIRECT_URL ?? '',
