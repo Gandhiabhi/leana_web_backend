@@ -27,9 +27,11 @@ COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nestjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nestjs:nodejs /app/scripts/start-prod.sh ./scripts/start-prod.sh
+RUN chmod +x ./scripts/start-prod.sh
 
 USER nestjs
 EXPOSE 4000
 
-# Apply pending migrations then start
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]
+# Apply pending migrations (auto-baseline if DB was created with db push), then start
+CMD ["sh", "scripts/start-prod.sh"]

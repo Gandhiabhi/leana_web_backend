@@ -80,7 +80,44 @@ Swagger docs (non-production) at `http://localhost:4000/api/docs`.
 docker compose up --build
 ```
 
-Brings up PostgreSQL + the API (runs `prisma migrate deploy` on boot).
+Brings up PostgreSQL + the API (runs migrations on boot via `scripts/start-prod.sh`).
+
+## Deploy on Render
+
+The Docker image runs `prisma migrate deploy` on startup. If your Supabase database was
+originally created with `prisma db push` (tables exist but no `_prisma_migrations` row),
+the startup script automatically baselines migration `20250610120000_init` once, then
+continues. This fixes Prisma error **P3005**.
+
+### Render settings
+
+| Setting | Value |
+| -------- | ----- |
+| Root directory | `Backend` (or repo root if backend is at root) |
+| Environment | Docker |
+| Dockerfile path | `Dockerfile` |
+| Port | `4000` |
+
+### Required environment variables
+
+Set these in the Render dashboard (use your Supabase **pooler** URL for `DATABASE_URL`):
+
+- `DATABASE_URL` — PostgreSQL connection string (Supabase pooler, port 6543 or 5432)
+- `DIRECT_URL` — Direct Supabase connection (for migrations if needed)
+- `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`
+- `CORS_ORIGIN` — your frontend URL (e.g. `https://your-app.vercel.app`)
+- Cloudinary, Stripe, mail vars as in `.env.example`
+
+### One-time manual baseline (optional)
+
+If you prefer to baseline before deploy, run locally against production DB:
+
+```bash
+cd Backend
+npx prisma migrate resolve --applied 20250610120000_init
+```
+
+After that, Render deploys will skip auto-baseline and only apply new migrations.
 
 ## Build status
 
