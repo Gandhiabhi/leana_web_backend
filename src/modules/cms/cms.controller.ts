@@ -7,7 +7,7 @@ import { ResponseMessage } from '../../common/decorators/response-message.decora
 import { HomeService } from './home.service';
 import { CmsPagesService } from './cms-pages.service';
 import { BannersService } from './banners.service';
-import { HomeFeatureDto, SetFeaturedProductsDto, UpdateHomeDto } from './dto/home.dto';
+import { HomeFeatureDto, SetFeaturedProductsDto, UpdateHomeDto, UpdateHomeFeatureDto } from './dto/home.dto';
 import { CreateCmsPageDto, QueryCmsPageDto, UpdateCmsPageDto } from './dto/cms-page.dto';
 import { CreateBannerDto, UpdateBannerDto } from './dto/banner.dto';
 
@@ -57,7 +57,7 @@ export class CmsController {
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.MANAGER)
   @ResponseMessage('Feature updated')
-  updateFeature(@Param('id') id: string, @Body() dto: HomeFeatureDto) {
+  updateFeature(@Param('id') id: string, @Body() dto: UpdateHomeFeatureDto) {
     return this.home.updateFeature(id, dto);
   }
 

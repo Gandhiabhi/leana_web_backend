@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { productInclude, toFrontendProduct } from '../products/products.mapper';
-import { HomeFeatureDto, SetFeaturedProductsDto, UpdateHomeDto } from './dto/home.dto';
+import { HomeFeatureDto, SetFeaturedProductsDto, UpdateHomeDto, UpdateHomeFeatureDto } from './dto/home.dto';
 
 const HOME_DEFAULTS = {
   heroEyebrow: 'Edition no. 07 — Spring',
@@ -78,7 +78,7 @@ export class HomeService {
     return this.getOrCreate();
   }
 
-  async updateFeature(id: string, dto: Partial<HomeFeatureDto>) {
+  async updateFeature(id: string, dto: UpdateHomeFeatureDto) {
     const feature = await this.prisma.homeFeature.findUnique({ where: { id } });
     if (!feature) throw new NotFoundException('Feature not found');
     await this.prisma.homeFeature.update({ where: { id }, data: dto });

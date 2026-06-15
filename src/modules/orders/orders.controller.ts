@@ -7,17 +7,13 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { Public } from '../../common/decorators/public.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { ResponseMessage } from '../../common/decorators/response-message.decorator';
 import { PaginationQueryDto } from '../../common/dto/pagination.dto';
-import { AuthenticatedUser } from '../../common/interfaces/jwt-payload.interface';
-import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 import { OrdersService } from './orders.service';
 import { CheckoutDto } from './dto/checkout.dto';
 import { QueryOrderDto, UpdateOrderStatusDto } from './dto/order-admin.dto';
@@ -27,18 +23,16 @@ import { QueryOrderDto, UpdateOrderStatusDto } from './dto/order-admin.dto';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Public()
-  @UseGuards(OptionalJwtAuthGuard)
   @Post('checkout')
+  @ApiBearerAuth()
   @ResponseMessage('Order created')
-  @ApiOperation({ summary: 'Create an order from the cart and start payment' })
+  @ApiOperation({ summary: 'Create an order from the cart and start payment (signed-in customers only)' })
   checkout(
-    @CurrentUser() user: AuthenticatedUser | undefined,
+    @CurrentUser('id') userId: string,
     @Body() dto: CheckoutDto,
     @Headers('x-cart-session') sessionId?: string,
   ) {
-    const owner = user ? { userId: user.id } : { sessionId: dto.sessionId ?? sessionId };
-    return this.ordersService.checkout(owner, dto);
+    return this.ordersService.checkout({ userId, sessionId: dto.sessionId ?? sessionId }, dto);
   }
 
   @Get()

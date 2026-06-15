@@ -24,6 +24,14 @@ export class HomeFeatureDto {
   @ApiProperty() @IsString() link!: string;
 }
 
+/** Partial updates for PATCH /cms/home/features/:id */
+export class UpdateHomeFeatureDto {
+  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(120) title?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(300) description?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() image?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() link?: string;
+}
+
 export class SetFeaturedProductsDto {
   @ApiProperty({ type: [String] })
   @IsArray()

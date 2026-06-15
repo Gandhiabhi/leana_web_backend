@@ -4,6 +4,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -40,9 +41,11 @@ export class OrdersService {
   // ── Checkout ──
 
   async checkout(owner: CartOwner, dto: CheckoutDto) {
-    const ownerWithSession: CartOwner = owner.userId
-      ? owner
-      : { sessionId: dto.sessionId ?? owner.sessionId };
+    if (!owner.userId) {
+      throw new UnauthorizedException('You must be signed in to place an order');
+    }
+
+    const ownerWithSession: CartOwner = { userId: owner.userId, sessionId: dto.sessionId ?? owner.sessionId };
 
     const cart = await this.cart.getCartEntity(ownerWithSession);
     if (!cart || cart.items.length === 0) {

@@ -27,4 +27,11 @@ export class RegisterDto {
   @IsString()
   @MaxLength(80)
   lastName?: string;
+
+  @ApiProperty({ example: '9876543210', description: '10-digit Indian mobile number' })
+  @IsString()
+  @Matches(/^(\+91[\-\s]?)?[6-9]\d{9}$/, {
+    message: 'Enter a valid 10-digit Indian mobile number',
+  })
+  phone!: string;
 }

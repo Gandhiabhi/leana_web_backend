@@ -62,6 +62,7 @@ export class AuthService {
       passwordHash,
       firstName: dto.firstName,
       lastName: dto.lastName,
+      phone: dto.phone.replace(/\s+/g, ''),
     });
 
     await this.issueEmailVerification(user.id, user.email);
